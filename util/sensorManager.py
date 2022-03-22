@@ -24,10 +24,11 @@ class Bme680_manager:
         
     
     def get_sensor_data(self):
-        
-        return {'humidity': self.get_sensor().data.humidity,
-                'gas_resistance': self.get_sensor().data.gas_resistance,
-                'temperature': self.get_sensor().data.temperature}
+         sensor = self.get_sensor()
+         sensor.get_sensor_data() # function from original lib, to update sensor inputs
+         return {'humidity': sensor.data.humidity,
+                    'gas_resistance': sensor.data.gas_resistance,
+                    'temperature': sensor.data.temperature}
     
         
     def get_sensor(self):
