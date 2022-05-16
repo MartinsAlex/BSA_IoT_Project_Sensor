@@ -45,7 +45,7 @@ class OpenWeatherMap_manager:
             lines = f.readlines()
             self.private_key = lines[0]
 
-    def get_outdoor_air_quality():
+    def get_outdoor_air_quality(self):
         r = requests.get(f'http://api.openweathermap.org/data/2.5/air_pollution?lat={LAUSANNE_LATITUDE}&lon={LAUSANNE_LONGITUDE}&appid={self.private_key}').json()
         pm10 = r['list'][0]['components']['pm10']
         no2 = r['list'][0]['components']['no2']
@@ -64,7 +64,7 @@ class OpenWeatherMap_manager:
 
         return air_quality_index
 
-    def get_outside_humidity_and_temperature():
+    def get_outside_humidity_and_temperature(self):
         
         r = requests.get(f"https://api.openweathermap.org/data/2.5/weather?lat={LAUSANNE_LATITUDE}&lon={LAUSANNE_LONGITUDE}&appid={self.private_key}&units=metric").json()
         
