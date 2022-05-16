@@ -1,5 +1,7 @@
 import bme680
 
+LAUSANNE_LATITUDE = 46.52751093142267
+LAUSANNE_LONGITUDE = 6.626519003698495
 
 class Bme680_manager:
     
@@ -34,7 +36,43 @@ class Bme680_manager:
     def get_sensor(self):
         return self.__sensor
     
+
+
+class OpenWeatherMap_manager:
     
+    def __init__(self, private_key_file):
+        with open(r'{private_key_file}') as f:
+            lines = f.readlines()
+            self.private_key = lines[0]
+
+    def get_outdoor_air_quality():
+        r = requests.get(f'http://api.openweathermap.org/data/2.5/air_pollution?lat={LAUSANNE_LATITUDE}&lon={LAUSANNE_LONGITUDE}&appid={self.private_key}').json()
+        pm10 = r['list'][0]['components']['pm10']
+        no2 = r['list'][0]['components']['no2']
+        o3 = r['list'][0]['components']['o3']
+        pm2_5 = r['list'][0]['components']['pm2_5']
+
+        pm10_max = 180
+        no2_max = 400
+        o3_max = 240
+        pm2_5_max = 110
+
+        # Air quality index calculation, according to:
+        # https://en.wikipedia.org/wiki/Air_quality_index#CAQI
+
+        air_quality_index = ((1 - pm10 / pm10_max) + (1 - no2 / no2_max) + (1 - o3 / o3_max) + (1 - pm2_5 / pm2_5_max)) / 4
+
+        return air_quality_index
+
+    def get_outside_humidity_and_temperature():
+        
+        r = requests.get(f"https://api.openweathermap.org/data/2.5/weather?lat={LAUSANNE_LATITUDE}&lon={LAUSANNE_LONGITUDE}&appid={self.private_key}&units=metric").json()
+        
+        return {'outside_temperature': r['main']['temp'],
+                'outside_humidity': r['main']['humidity']}
+
+
+
 def air_quality_index(temp, hum, gas):
 
     hum_baseline = 40

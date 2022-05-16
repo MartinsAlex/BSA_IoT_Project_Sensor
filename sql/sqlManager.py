@@ -23,16 +23,22 @@ class SQL_Manager:
     
     
     def insert_row(self,
-                   temperature: float,
-                   humidity: float,
-                   gas_resistance: float,
-                   air_quality: float):
+                   indoor_temperature: float,
+                   indoor_humidity: float,
+                   indoor_gas_resistance: float,
+                   indoor_air_quality: float,
+                   outdoor_temperature: float,
+                   outdoor_humidity: float,
+                   outdoor_air_quality: float):
         
         rows_to_insert = [{'timestamp': dt.datetime.now().strftime("%Y-%m-%d %H:%M"), 
-                 'humidity': humidity, 
-                 'gas_resistance': gas_resistance, 
-                 'temperature': temperature,
-                'air_quality_index': air_quality}]
+                 'indoor_humidity': indoor_humidity, 
+                 'indoor_gas_resistance': indoor_gas_resistance, 
+                 'indoor_temperature': indoor_temperature,
+                'indoor_air_quality': indoor_air_quality,
+                'outdoor_temperature': outdoor_temperature,
+                'outdoor_humidity': outdoor_humidity,
+                'outdoor_air_quality': outdoor_air_quality}]
         
         insert_errors = self.get_client().insert_rows_json(
                                         self.get_bme680_table(),
