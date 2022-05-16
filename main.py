@@ -32,17 +32,20 @@ if __name__ == '__main__':
                                         indoor_hum, 
                                         indoor_gas_resist)
         
+        try:
+            outdoor_temp_hum = openWeather_manager.get_outside_humidity_and_temperature()
 
-        outdoor_temp_hum = openWeather_manager.get_outside_humidity_and_temperature()
 
+            sql_manager.insert_row(indoor_temp,
+                                   indoor_hum,
+                                   indoor_gas_resist,
+                                   indoor_air_quality,
+                                   outdoor_temp_hum['outside_temperature'],
+                                   outdoor_temp_hum['outside_humidity'],
+                                   openWeather_manager.get_outdoor_air_quality())
+        except ConnexionError:
+            pass
 
-        sql_manager.insert_row(indoor_temp,
-                               indoor_hum,
-                               indoor_gas_resist,
-                               indoor_air_quality,
-                               outdoor_temp_hum['outside_temperature'],
-                               outdoor_temp_hum['outside_humidity'],
-                               openWeather_manager.get_outdoor_air_quality())
     
 
 
