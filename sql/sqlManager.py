@@ -5,18 +5,18 @@ import os
 
 class SQL_Manager:
     
-    def __init__(self, secret_key_file):
+    def __init__(self, secret_key_file, project_id, dataset_id, table_id):
         os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = secret_key_file
         
-        self.project_id = "unilbigscaleanalytics"
+        self.project_id = project_id
         self.__client = bigquery.Client(project=self.project_id)
         
-        dataset_ref = self.get_client().dataset("IoT_Project", project=self.project_id)
+        dataset_ref = self.get_client().dataset(dataset_id, project=self.project_id)
         
         self.__dataset = self.get_client().get_dataset(dataset_ref)
         
-        # Create a reference to the "movies" table
-        bme680_table_ref = dataset_ref.table("bme680")
+
+        bme680_table_ref = dataset_ref.table(table_id)
 
         # Fetch the table (API request)
         self.__bme680_table = self.get_client().get_table(bme680_table_ref)

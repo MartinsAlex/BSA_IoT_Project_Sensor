@@ -114,3 +114,8 @@ def air_quality_index(temp, hum, gas):
     
     
     return air_quality_score
+
+        
+
+if __name__ == '__main__':
+    pass

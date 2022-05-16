@@ -9,7 +9,10 @@ if __name__ == '__main__':
     
     sensor_manager = Bme680_manager()
     
-    sql_manager = SQL_Manager("/home/pi/Desktop/bigQueryKeys.json")
+    sql_manager = SQL_Manager("/home/pi/Desktop/bigQueryKeys.json",
+                              "unilbigscaleanalytics",
+                              "IoT_Project",
+                              "bme680")
 
     openWeather_manager = OpenWeatherMap_manager("/home/pi/Desktop/openWeatherMapKeys.txt")
     
