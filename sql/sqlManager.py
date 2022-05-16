@@ -1,11 +1,13 @@
 import datetime as dt
 from google.cloud import bigquery
 import os
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "bigQueryKeys.json"
+
 
 class SQL_Manager:
     
-    def __init__(self):
+    def __init__(self, secret_key_file):
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = secret_key_file
+        
         self.project_id = "unilbigscaleanalytics"
         self.__client = bigquery.Client(project=self.project_id)
         
@@ -24,19 +26,19 @@ class SQL_Manager:
                    temperature: float,
                    humidity: float,
                    gas_resistance: float,
-		   air_quality: float):
+                   air_quality: float):
         
         rows_to_insert = [{'timestamp': dt.datetime.now().strftime("%Y-%m-%d %H:%M"), 
                  'humidity': humidity, 
                  'gas_resistance': gas_resistance, 
                  'temperature': temperature,
-		 'air_quality': air_quality}]
+                'air_quality_index': air_quality}]
         
         insert_errors = self.get_client().insert_rows_json(
                                         self.get_bme680_table(),
                                         rows_to_insert)
         if len(insert_errors) > 0:
-            print(f"Error while inserting a row : {rows_to_insert[0]}")
+            print(f"Error while inserting a row : {insert_errors}")
         else:
             print(f"Successfully inserted a row: {rows_to_insert[0]}")
         
