@@ -1,4 +1,5 @@
 import bme680
+import requests
 
 LAUSANNE_LATITUDE = 46.52751093142267
 LAUSANNE_LONGITUDE = 6.626519003698495
@@ -41,7 +42,7 @@ class Bme680_manager:
 class OpenWeatherMap_manager:
     
     def __init__(self, private_key_file):
-        with open(r'{private_key_file}') as f:
+        with open(f"{private_key_file}") as f:
             lines = f.readlines()
             self.private_key = lines[0]
 
