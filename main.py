@@ -19,7 +19,7 @@ if __name__ == '__main__':
     
     while True:
         
-        time.sleep(2)
+        time.sleep(60)
     
         sensor_data = sensor_manager.get_sensor_data()
 

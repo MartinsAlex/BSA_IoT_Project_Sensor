@@ -63,7 +63,7 @@ class OpenWeatherMap_manager:
 
         air_quality_index = ((1 - pm10 / pm10_max) + (1 - no2 / no2_max) + (1 - o3 / o3_max) + (1 - pm2_5 / pm2_5_max)) / 4
 
-        return air_quality_index
+        return air_quality_index*100
 
     def get_outside_humidity_and_temperature(self):
         
