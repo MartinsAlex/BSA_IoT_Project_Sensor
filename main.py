@@ -1,4 +1,4 @@
-from util.sensorManager import Bme680_manager
+from utils import Bme680_manager, air_quality_index
 from sql.sqlManager import SQL_Manager
 import time
 
@@ -17,11 +17,16 @@ if __name__ == '__main__':
         time.sleep(2)
     
         sensor_data = sensor_manager.get_sensor_data()
+
+	temp = sensor_data['temperature']
+	hum = sensor_data['humidity']
+	gas_resist = sensor_data['gas_resistance']
+
+        air_quality = air_quality_index(temp, hum, gas_resist)
         
-        
-        sql_manager.insert_row(sensor_data['temperature'],
-                               sensor_data['humidity'],
-                               sensor_data['gas_resistance'])
+        sql_manager.insert_row(temp,
+                               hum,
+                               gas_resist)
     
 
 

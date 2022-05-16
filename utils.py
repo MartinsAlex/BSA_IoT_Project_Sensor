@@ -35,4 +35,43 @@ class Bme680_manager:
         return self.__sensor
     
     
+def air_quality_index(temp, hum, gas):
+
+    hum_baseline = 40
+    hum_weighting = 0.25
+    gas_baseline = 35347.80 # avg on previous collected data
     
+    gas_offset = gas_baseline - gas
+
+    hum_offset = hum - hum_baseline
+
+    # Calculate hum_score as the distance from the hum_baseline.
+    if hum_offset > 0:
+        hum_score = (100 - hum_baseline - hum_offset)
+        hum_score /= (100 - hum_baseline)
+        hum_score *= (hum_weighting * 100)
+
+    else:
+        hum_score = (hum_baseline + hum_offset)
+        hum_score /= hum_baseline
+        hum_score *= (hum_weighting * 100)
+
+    # Calculate gas_score as the distance from the gas_baseline.
+    if gas_offset > 0:
+        gas_score = (gas / gas_baseline)
+        gas_score *= (100 - (hum_weighting * 100))
+
+    else:
+        gas_score = 100 - (hum_weighting * 100)
+
+    # Calculate air_quality_score.
+    air_quality_score = hum_score + gas_score
+
+
+    print('Gas: {0:.2f} Ohms,humidity: {1:.2f} %RH,air quality: {2:.2f}'.format(
+        gas,
+        hum,
+        air_quality_score))
+    
+    
+    return air_quality_score

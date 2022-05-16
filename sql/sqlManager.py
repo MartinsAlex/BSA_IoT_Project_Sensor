@@ -18,18 +18,19 @@ class SQL_Manager:
 
         # Fetch the table (API request)
         self.__bme680_table = self.get_client().get_table(bme680_table_ref)
-                
     
     
     def insert_row(self,
                    temperature: float,
                    humidity: float,
-                   gas_resistance: float):
+                   gas_resistance: float,
+		   air_quality: float):
         
         rows_to_insert = [{'timestamp': dt.datetime.now().strftime("%Y-%m-%d %H:%M"), 
                  'humidity': humidity, 
                  'gas_resistance': gas_resistance, 
-                 'temperature': temperature}]
+                 'temperature': temperature,
+		 'air_quality': air_quality}]
         
         insert_errors = self.get_client().insert_rows_json(
                                         self.get_bme680_table(),
