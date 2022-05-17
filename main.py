@@ -43,7 +43,7 @@ if __name__ == '__main__':
                                    outdoor_temp_hum['outside_temperature'],
                                    outdoor_temp_hum['outside_humidity'],
                                    openWeather_manager.get_outdoor_air_quality())
-        except ConnexionError:
+        except requests.exceptions.ConnectionError:
             pass
 
     
