@@ -1,8 +1,27 @@
 import bme680
 import requests
+import time
 
 LAUSANNE_LATITUDE = 46.52751093142267
 LAUSANNE_LONGITUDE = 6.626519003698495
+
+# Collect gas resistance burn-in values, then use the average
+# of the last 50 values to set the upper limit for calculating
+# gas_baseline.
+start_time = time.time()
+curr_time = time.time()
+burn_in_time = 180
+burn_in_data = []
+print('Collecting gas resistance burn-in data for 3 mins\n')
+while curr_time - start_time < burn_in_time:
+    curr_time = time.time()
+    if sensor.get_sensor_data() and sensor.data.heat_stable:
+        gas = sensor.data.gas_resistance
+        burn_in_data.append(gas)
+        print('Gas: {0} Ohms'.format(gas))
+        time.sleep(1)
+
+GAS_BASELINE = sum(burn_in_data[-50:]) / 50.0
 
 class Bme680_manager:
     
@@ -24,7 +43,8 @@ class Bme680_manager:
         self.__sensor.set_gas_heater_duration(150)
         self.__sensor.select_gas_heater_profile(0)
                 
-        
+
+
     
     def get_sensor_data(self):
          sensor = self.get_sensor()
@@ -61,9 +81,9 @@ class OpenWeatherMap_manager:
         # Air quality index calculation, according to:
         # https://en.wikipedia.org/wiki/Air_quality_index#CAQI
 
-        air_quality_index = ((1 - pm10 / pm10_max) + (1 - no2 / no2_max) + (1 - o3 / o3_max) + (1 - pm2_5 / pm2_5_max)) / 4
+        outdoor_air_quality_index = ((1 - pm10 / pm10_max) + (1 - no2 / no2_max) + (1 - o3 / o3_max) + (1 - pm2_5 / pm2_5_max)) / 4
 
-        return air_quality_index*100
+        return outdoor_air_quality_index*100
 
     def get_outside_humidity_and_temperature(self):
         
@@ -78,9 +98,8 @@ def air_quality_index(temp, hum, gas):
 
     hum_baseline = 40
     hum_weighting = 0.25
-    gas_baseline = 35347.80 # avg on previous collected data
     
-    gas_offset = gas_baseline - gas
+    gas_offset = GAS_BASELINE - gas
 
     hum_offset = hum - hum_baseline
 
@@ -97,7 +116,7 @@ def air_quality_index(temp, hum, gas):
 
     # Calculate gas_score as the distance from the gas_baseline.
     if gas_offset > 0:
-        gas_score = (gas / gas_baseline)
+        gas_score = (gas / GAS_BASELINE)
         gas_score *= (100 - (hum_weighting * 100))
 
     else:
