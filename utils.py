@@ -5,23 +5,7 @@ import time
 LAUSANNE_LATITUDE = 46.52751093142267
 LAUSANNE_LONGITUDE = 6.626519003698495
 
-# Collect gas resistance burn-in values, then use the average
-# of the last 50 values to set the upper limit for calculating
-# gas_baseline.
-start_time = time.time()
-curr_time = time.time()
-burn_in_time = 180
-burn_in_data = []
-print('Collecting gas resistance burn-in data for 3 mins\n')
-while curr_time - start_time < burn_in_time:
-    curr_time = time.time()
-    if sensor.get_sensor_data() and sensor.data.heat_stable:
-        gas = sensor.data.gas_resistance
-        burn_in_data.append(gas)
-        print('Gas: {0} Ohms'.format(gas))
-        time.sleep(1)
 
-GAS_BASELINE = sum(burn_in_data[-50:]) / 50.0
 
 class Bme680_manager:
     
@@ -94,12 +78,12 @@ class OpenWeatherMap_manager:
 
 
 
-def air_quality_index(temp, hum, gas):
+def air_quality_index(temp, hum, gas, baseline):
 
     hum_baseline = 40
     hum_weighting = 0.25
     
-    gas_offset = GAS_BASELINE - gas
+    gas_offset = baseline - gas
 
     hum_offset = hum - hum_baseline
 
@@ -116,7 +100,7 @@ def air_quality_index(temp, hum, gas):
 
     # Calculate gas_score as the distance from the gas_baseline.
     if gas_offset > 0:
-        gas_score = (gas / GAS_BASELINE)
+        gas_score = (gas / baseline)
         gas_score *= (100 - (hum_weighting * 100))
 
     else:
@@ -134,7 +118,30 @@ def air_quality_index(temp, hum, gas):
     
     return air_quality_score
 
-        
+   
+def compute_gas_baseline(sensor):
+
+    # Collect gas resistance burn-in values, then use the average
+    # of the last 50 values to set the upper limit for calculating
+    # gas_baseline.
+    start_time = time.time()
+    curr_time = time.time()
+    burn_in_time = 180
+    burn_in_data = []
+    print('Collecting gas resistance burn-in data for 3 mins\n')
+    while curr_time - start_time < burn_in_time:
+        curr_time = time.time()
+        if sensor.get_sensor_data() and sensor.data.heat_stable:
+            gas = sensor.data.gas_resistance
+            burn_in_data.append(gas)
+            print('Gas: {0} Ohms'.format(gas))
+            time.sleep(1)
+
+    gas_baseline = sum(burn_in_data[-50:]) / 50.0
+
+    return gas_baseline
+
+
 
 if __name__ == '__main__':
     pass
