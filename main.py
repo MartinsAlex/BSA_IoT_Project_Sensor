@@ -32,7 +32,7 @@ if __name__ == '__main__':
             i -= 1
         
         
-        time.sleep(60)
+        
         
         sensor_data = sensor_manager.get_sensor_data()
 
@@ -58,8 +58,11 @@ if __name__ == '__main__':
                                    outdoor_temp_hum['outside_humidity'],
                                    openWeather_manager.get_outdoor_air_quality())
         
+        
         except Exception as e:
             print('An exception occurred: {}'.format(e))
+           
+        time.sleep(60)
 
     
 
