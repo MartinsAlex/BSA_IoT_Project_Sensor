@@ -19,13 +19,21 @@ if __name__ == '__main__':
 
     openWeather_manager = OpenWeatherMap_manager("/home/pi/Desktop/openWeatherMapKeys.txt")
     
-    gas_baseline = compute_gas_baseline(sensor_manager)
-
+    
+    i = 0
     
     while True:
         
+        # Each hour, the gas baseline is recalculated
+        if i == 0:
+            gas_baseline = compute_gas_baseline(sensor_manager)
+            i = 60
+        else:
+            i -= 1
+        
+        
         time.sleep(60)
-    
+        
         sensor_data = sensor_manager.get_sensor_data()
 
         indoor_temp = sensor_data['temperature']
