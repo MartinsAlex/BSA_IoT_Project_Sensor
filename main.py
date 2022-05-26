@@ -24,15 +24,8 @@ if __name__ == '__main__':
     
     while True:
         
-        # Each hour, the gas baseline is recalculated
-        if i == 0:
-            gas_baseline = compute_gas_baseline(sensor_manager)
-            i = 60
-        else:
-            i -= 1
-        
-        
-        
+        # Hard-coded avg gas_resistance, based on 8000 observed entries
+        gas_baseline = 50000
         
         sensor_data = sensor_manager.get_sensor_data()
 
