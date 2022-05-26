@@ -118,30 +118,5 @@ def air_quality_index(temp, hum, gas, baseline):
     
     return air_quality_score
 
-   
-def compute_gas_baseline(sensor):
-
-    # Collect gas resistance burn-in values, then use the average
-    # of the last 50 values to set the upper limit for calculating
-    # gas_baseline.
-    start_time = time.time()
-    curr_time = time.time()
-    burn_in_time = 180
-    burn_in_data = []
-    print('Collecting gas resistance burn-in data for 3 mins\n')
-    while curr_time - start_time < burn_in_time:
-        curr_time = time.time()
-        if sensor.get_sensor_data():
-            gas = sensor.get_sensor_data()['gas_resistance']
-            burn_in_data.append(gas)
-            print('Gas: {0} Ohms'.format(gas))
-            time.sleep(1)
-
-    gas_baseline = sum(burn_in_data[-50:]) / 50.0
-
-    return gas_baseline
-
-
-
 if __name__ == '__main__':
     pass
