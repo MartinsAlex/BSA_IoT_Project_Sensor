@@ -1,4 +1,4 @@
-from utils import Bme680_manager, air_quality_index, OpenWeatherMap_manager, compute_gas_baseline
+from utils import Bme680_manager, air_quality_index, OpenWeatherMap_manager
 from sql.sqlManager import SQL_Manager
 import time
 
